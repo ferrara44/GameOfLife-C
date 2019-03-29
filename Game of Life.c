@@ -5,16 +5,15 @@
 #include <unistd.h>
 
 //Conway's Game of Life, C implementation by Facundo Ferrara github.com/ferrara44
-
 int turn;
 int life;
 int fertility;
-char world1[70][15];
-char world2[70][15];
+char world1[70][20];
+char world2[70][20];
 char menu;
 
 void seed(){ //Sets the seed for the world based on the chosen fertility level
-	for (int j=0;j<15;j++){
+	for (int j=0;j<20;j++){
 		for(int i=0;i<70;i++){
 			life=(rand()%10);
 			if (life<fertility) world1[i][j]='o';
@@ -24,7 +23,7 @@ void seed(){ //Sets the seed for the world based on the chosen fertility level
 }
 
 void printWorld1(){
-		for (int j=0;j<15;j++){
+		for (int j=0;j<20;j++){
 			for(int i=0;i<70;i++){
 				printf("%c", world1[i][j]);
 				if (i==69) printf("\n");
@@ -34,7 +33,7 @@ void printWorld1(){
 }
 
 void printWorld2(){
-	for (int j=0;j<15;j++){
+	for (int j=0;j<20;j++){
 		for(int i=0;i<70;i++){
 			printf("%c", world2[i][j]);
 			if (i==69) printf("\n");
@@ -86,7 +85,7 @@ void evaluar2(int a,int b,int c){ //checks how many living neighbors this tile h
 void step1(){
 	int alive;
 	
-	for (int j=0;j<15;j++){
+	for (int j=0;j<20;j++){
 		for (int i=0;i<70;i++){
 			if (world1[i][j]=='o'){
 				alive=1;
@@ -100,7 +99,7 @@ void step1(){
 void step2(){
 	int alive;
 	
-	for (int j=0;j<15;j++){
+	for (int j=0;j<20;j++){
 		for (int i=0;i<70;i++){
 			if (world2[i][j]=='o'){
 				alive=1;
