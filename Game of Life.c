@@ -1,20 +1,33 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#ifdef WINDOWS
 #include <windows.h>
+#endif
 #include <unistd.h>
+
+#define ROWS 20
+#define COLS 70
+
+#ifdef WINDOWS
+	#define SLEEP Sleep(100)
+	#define CLS system("cls")
+#else
+	#define SLEEP usleep(100000)
+	#define CLS printf("\033[%dA", ROWS)
+#endif
 
 //Conway's Game of Life, C implementation by Facundo Ferrara github.com/ferrara44
 int turn;
 int life;
 int fertility;
-char world1[70][20];
-char world2[70][20];
+char world1[COLS][ROWS];
+char world2[COLS][ROWS];
 char menu;
 
 void seed(){ //Sets the seed for the world based on the chosen fertility level
-	for (int j=0;j<20;j++){
-		for(int i=0;i<70;i++){
+	for (int j=0;j<ROWS;j++){
+		for(int i=0;i<COLS;i++){
 			life=(rand()%10);
 			if (life<fertility) world1[i][j]='o';
 			else world1[i][j]=' ';
@@ -23,8 +36,8 @@ void seed(){ //Sets the seed for the world based on the chosen fertility level
 }
 
 void printWorld1(){
-		for (int j=0;j<20;j++){
-			for(int i=0;i<70;i++){
+		for (int j=0;j<ROWS;j++){
+			for(int i=0;i<COLS;i++){
 				printf("%c", world1[i][j]);
 				if (i==69) printf("\n");
 			}
@@ -33,8 +46,8 @@ void printWorld1(){
 }
 
 void printWorld2(){
-	for (int j=0;j<20;j++){
-		for(int i=0;i<70;i++){
+	for (int j=0;j<ROWS;j++){
+		for(int i=0;i<COLS;i++){
 			printf("%c", world2[i][j]);
 			if (i==69) printf("\n");
 		}
@@ -85,8 +98,8 @@ void evaluar2(int a,int b,int c){ //checks how many living neighbors this tile h
 void step1(){
 	int alive;
 	
-	for (int j=0;j<20;j++){
-		for (int i=0;i<70;i++){
+	for (int j=0;j<ROWS;j++){
+		for (int i=0;i<COLS;i++){
 			if (world1[i][j]=='o'){
 				alive=1;
 			}
@@ -99,8 +112,8 @@ void step1(){
 void step2(){
 	int alive;
 	
-	for (int j=0;j<20;j++){
-		for (int i=0;i<70;i++){
+	for (int j=0;j<ROWS;j++){
+		for (int i=0;i<COLS;i++){
 			if (world2[i][j]=='o'){
 				alive=1;
 			}
@@ -127,25 +140,26 @@ int main(){
 	printf("\n\n Type 'Y' to play this world.\n Type 'S' to perform a step \n Type any other value to exit.\n");
 	
 	scanf("\n%c",&menu);
+	printf("\033[2J\033[H");
 	
 	do{switch (menu){
 	case ('Y'): case ('y'):
 		for(int turno=0;turno<150;turno++){
 		if (turn==0){
-			system("cls");
+			CLS;
 			printWorld1();
 			step1();
-			Sleep(50);
-			system("cls");
+			SLEEP;
+			CLS;
 			printWorld2();
 			step2();
-			Sleep(50);
+			SLEEP;
 		}
 		else if (turn==1){
-			system("cls");
+			CLS;
 			printWorld1();
 			step2();
-			Sleep(50);
+			SLEEP;
 			turn=0;
 		}
 		
@@ -154,17 +168,17 @@ int main(){
 		
 	case ('S'): case ('s'):
 		if(turn==0){
-			system("cls");
+			CLS;
 			printWorld1();
 			step1();
-			Sleep(50);
+			SLEEP;
 			turn=1;
 		}
 		else if(turn==1){
-			system("cls");
+			CLS;
 			printWorld2();
 			step2();
-			Sleep(50);
+			SLEEP;
 			turn=0;
 		}
 		break;
