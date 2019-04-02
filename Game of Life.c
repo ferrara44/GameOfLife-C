@@ -96,11 +96,13 @@ int main(){
 	
 	scanf("\n%c", &menu);
 	printf("\033[2J\033[H");
+
+	int turn = 0;
 	
 	do{
 	switch (menu){
 	case ('Y'): case ('y'):
-		for(int turn = 0; turn < 150; turn++) {
+		for(turn = 0; turn < 150; turn++) {
 			CLS;
 			printWorld(world1);
 			if (turn == 0){
