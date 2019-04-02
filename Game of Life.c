@@ -35,156 +35,108 @@ void seed(){ //Sets the seed for the world based on the chosen fertility level
 	}
 }
 
-void printWorld1(){
-		for (int j=0;j<ROWS;j++){
-			for(int i=0;i<COLS;i++){
-				printf("%c", world1[i][j]);
-				if (i==69) printf("\n");
+void printWorld(char world[COLS][ROWS]){
+		for (int j = 0; j < ROWS; j++){
+			for(int i = 0 ;i < COLS; i++){
+				printf("%c", world[i][j]);
 			}
+			printf("\n");
 		}
-
 }
 
-void printWorld2(){
-	for (int j=0;j<ROWS;j++){
-		for(int i=0;i<COLS;i++){
-			printf("%c", world2[i][j]);
-			if (i==69) printf("\n");
-		}
-	}
-	
-}
-
-void evaluar(int a,int b,int c){ //checks how many living neighbors this tile has in world1, and determines the outcome as per the rules of the game.
-	int alive=a;
-	int neighbors=0;
-	if (world1	[b-1]	[c]		=='o') neighbors++;
-	if (world1	[b+1]	[c]		=='o') neighbors++;
-	if (world1	[b-1]	[c+1]	=='o') neighbors++;
-	if (world1	[b]		[c+1]	=='o') neighbors++;
-	if (world1	[b+1]	[c+1]	=='o') neighbors++;
-	if (world1	[b-1]	[c-1]	=='o') neighbors++;
-	if (world1	[b]		[c-1]	=='o') neighbors++;
-	if (world1	[b+1]	[c-1]	=='o') neighbors++;
-	
-	if 		(alive==1 && neighbors<2) world2[b][c]=' '; /*dies of loneliness*/
-	else if (alive==1 && neighbors>3) world2[b][c]=' '; /*overpopulation*/
-	else if (alive==1 && (neighbors==2 || neighbors==3)) world2[b][c]='o'; /*stable*/
-	else if (alive==0 && neighbors==3) world2[b][c]='o'; /*birth*/
-	else world2[b][c]=' '; /*barren*/
-}
-
-
-
-void evaluar2(int a,int b,int c){ //checks how many living neighbors this tile has in world2, and determines the outcome as per the rules of the game.
-	int alive=a;
-	int neighbors=0;
-	if (world2	[b-1]	[c]		=='o') neighbors++;
-	if (world2	[b+1]	[c]		=='o') neighbors++;
-	if (world2	[b-1]	[c+1]	=='o') neighbors++;
-	if (world2	[b]		[c+1]	=='o') neighbors++;
-	if (world2	[b+1]	[c+1]	=='o') neighbors++;
-	if (world2	[b-1]	[c-1]	=='o') neighbors++;
-	if (world2	[b]		[c-1]	=='o') neighbors++;
-	if (world2	[b+1]	[c-1]	=='o') neighbors++;
-	
-	if 		(alive==1 && neighbors<2) world1[b][c]=' '; 
-	else if (alive==1 && neighbors>3) world1[b][c]=' '; 
-	else if (alive==1 && (neighbors==2 || neighbors==3)) world1[b][c]='o'; 
-	else if (alive==0 && neighbors==3) world1[b][c]='o';
-	else world1[b][c]=' ';
-}
-
-void step1(){
-	int alive;
-	
-	for (int j=0;j<ROWS;j++){
-		for (int i=0;i<COLS;i++){
-			if (world1[i][j]=='o'){
-				alive=1;
+void evaluar(int b, int c, char world_a[COLS][ROWS], char world_b[COLS][ROWS]){ //checks how many living neighbors this tile has in world1, and determines the outcome as per the rules of the game.
+	int neighbors = 0;
+	int alive = (world_a[b][c] == 'o');
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			if (i == j) {
+				continue;
 			}
-			else alive=0;
-			evaluar(alive,i,j);
+			neighbors += (world_a[b + i][c + j] == 'o');
 		}
 	}
+	
+	if (neighbors == 3 || (alive && (neighbors == 2))) {
+		world_b[b][c] = 'o';
+	} else {
+		world_b[b][c] = ' ';
 	}
-	
-void step2(){
-	int alive;
-	
-	for (int j=0;j<ROWS;j++){
-		for (int i=0;i<COLS;i++){
-			if (world2[i][j]=='o'){
-				alive=1;
-			}
-			else alive=0;
-			evaluar2(alive,i,j);
+}
+
+void step(char world_a[COLS][ROWS], char world_b[COLS][ROWS]){
+	for (int j = 0; j < ROWS; j++){
+		for (int i = 0; i < COLS; i++){
+			evaluar(i, j, world_a, world_b);
 		}
 	}
 }
 
 int main(){
 	srand(time(NULL));
+	fertility = 0;
 	
 	printf("Conway's Game of Life");
 	printf("Select a starting fertility level from 1 to 10:\n");
+	char buffer[100] = "";
 	do{
-	scanf("%d",&fertility);
-	
-	if (fertility <1 || fertility > 10) printf("\n Please set a starting fertility in ranges 1 to 10.\n");}while (fertility<1||fertility>10);
+		fgets(buffer, sizeof(buffer), stdin);
+		if (sscanf(buffer, "%d", &fertility) != 1) {
+			fertility = 0;
+		}
+		if (fertility >= 1 && fertility <= 10) {
+			break;
+		}
+		printf("Please set a starting fertility in ranges 1 to 10.\n");
+	} while (true);
 	
 	seed();
-	printWorld1();
+	printWorld(world1);
 	
 	printf("\n\n Generated World.\n");
 	printf("\n\n Type 'Y' to play this world.\n Type 'S' to perform a step \n Type any other value to exit.\n");
 	
-	scanf("\n%c",&menu);
+	scanf("\n%c", &menu);
 	printf("\033[2J\033[H");
 	
-	do{switch (menu){
+	do{
+	switch (menu){
 	case ('Y'): case ('y'):
-		for(int turno=0;turno<150;turno++){
-		if (turn==0){
+		for(int turno = 0; turno < 150; turno++) {
 			CLS;
-			printWorld1();
-			step1();
+			printWorld(world1);
+			if (turn == 0){
+				step(world1, world2);
+				SLEEP;
+				CLS;
+				printWorld(world2);
+				step(world2, world1);
+			} else if (turn == 1){
+				step(world2, world1);
+				turn = 0;
+			}
 			SLEEP;
-			CLS;
-			printWorld2();
-			step2();
-			SLEEP;
-		}
-		else if (turn==1){
-			CLS;
-			printWorld1();
-			step2();
-			SLEEP;
-			turn=0;
-		}
-		
 		}
 		break;
 		
 	case ('S'): case ('s'):
-		if(turn==0){
-			CLS;
-			printWorld1();
-			step1();
-			SLEEP;
-			turn=1;
+		CLS;
+		if(turn == 0){
+			printWorld(world1);
+			step(world1, world2);
+			turn = 1;
 		}
-		else if(turn==1){
-			CLS;
-			printWorld2();
-			step2();
-			SLEEP;
-			turn=0;
+		else if(turn == 1){
+			printWorld(world2);
+			step(world2, world1);
+			turn = 0;
 		}
+		SLEEP;
 		break;
 	}
-	printf("\n\n Type 'Y' to play this world.\n Type 'S' to perform a step \n Type any other value to exit.\n");
+	printf("\n\n Type 'Y' to play this world.\n Type 'S' to perform a step \n Type any other value to exit.\n\033[6A");
 	
-	scanf("\n%c",&menu);
-	}while (menu=='S' || menu=='s' || menu=='Y' || menu=='y');
+	scanf("\n%c", &menu);
+	} while (menu =='S' || menu =='s' || menu =='Y' || menu == 'y');
+
+	printf("\033[6B");
 }
