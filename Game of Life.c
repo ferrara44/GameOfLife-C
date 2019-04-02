@@ -18,7 +18,6 @@
 #endif
 
 //Conway's Game of Life, C implementation. github.com/ferrara44
-int turn;
 int life;
 int fertility;
 char world1[COLS][ROWS];
@@ -101,7 +100,7 @@ int main(){
 	do{
 	switch (menu){
 	case ('Y'): case ('y'):
-		for(int turno = 0; turno < 150; turno++) {
+		for(int turn = 0; turn < 150; turn++) {
 			CLS;
 			printWorld(world1);
 			if (turn == 0){
