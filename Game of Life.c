@@ -17,7 +17,7 @@
 	#define CLS printf("\033[%dA", ROWS)
 #endif
 
-//Conway's Game of Life, C implementation by Facundo Ferrara github.com/ferrara44
+//Conway's Game of Life, C implementation. github.com/ferrara44
 int turn;
 int life;
 int fertility;
@@ -25,7 +25,7 @@ char world1[COLS][ROWS];
 char world2[COLS][ROWS];
 char menu;
 
-void seed(){ //Sets the seed for the world based on the chosen fertility level
+void seed(){ //Generates the world based on the selected fertility level
 	for (int j=0;j<ROWS;j++){
 		for(int i=0;i<COLS;i++){
 			life=(rand()%10);
@@ -35,7 +35,7 @@ void seed(){ //Sets the seed for the world based on the chosen fertility level
 	}
 }
 
-void printWorld(char world[COLS][ROWS]){
+void printWorld(char world[COLS][ROWS]){ //Prints the next world on screen
 		for (int j = 0; j < ROWS; j++){
 			for(int i = 0 ;i < COLS; i++){
 				printf("%c", world[i][j]);
@@ -44,7 +44,7 @@ void printWorld(char world[COLS][ROWS]){
 		}
 }
 
-void evaluar(int b, int c, char world_a[COLS][ROWS], char world_b[COLS][ROWS]){ //checks how many living neighbors this tile has in world1, and determines the outcome as per the rules of the game.
+void evaluate(int b, int c, char world_a[COLS][ROWS], char world_b[COLS][ROWS]){ //checks how many living neighbors this tilr currently has, and determines the outcome as per the rules of the game.
 	int neighbors = 0;
 	int alive = (world_a[b][c] == 'o');
 	for (int i = -1; i <= 1; i++) {
@@ -66,7 +66,7 @@ void evaluar(int b, int c, char world_a[COLS][ROWS], char world_b[COLS][ROWS]){ 
 void step(char world_a[COLS][ROWS], char world_b[COLS][ROWS]){
 	for (int j = 0; j < ROWS; j++){
 		for (int i = 0; i < COLS; i++){
-			evaluar(i, j, world_a, world_b);
+			evaluate(i, j, world_a, world_b);
 		}
 	}
 }
@@ -78,7 +78,7 @@ int main(){
 	printf("Conway's Game of Life");
 	printf("Select a starting fertility level from 1 to 10:\n");
 	char buffer[100] = "";
-	do{
+	for(;;){
 		fgets(buffer, sizeof(buffer), stdin);
 		if (sscanf(buffer, "%d", &fertility) != 1) {
 			fertility = 0;
@@ -87,7 +87,7 @@ int main(){
 			break;
 		}
 		printf("Please set a starting fertility in ranges 1 to 10.\n");
-	} while (true);
+	}
 	
 	seed();
 	printWorld(world1);
