@@ -48,7 +48,7 @@ void evaluate(int b, int c, char world_a[COLS][ROWS], char world_b[COLS][ROWS]){
 	int alive = (world_a[b][c] == 'o');
 	for (int i = -1; i <= 1; i++) {
 		for (int j = -1; j <= 1; j++) {
-			if (i == j) {
+			if (i == j || b + i >= COLS || b + i < 0 || c + j >= ROWS || c + j < 0) {
 				continue;
 			}
 			neighbors += (world_a[b + i][c + j] == 'o');
